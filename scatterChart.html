@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+ <html>
+  <head>
+    <!-- Loads the AJAX and JQUERY API -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    
+    <script type="text/javascript">
+    // Load the Visualization API and the corechart package.
+      google.charts.load('current', {packages:['corechart']});
+     
+// When the document is ready.       
+$(document).ready(function(){ 
+
+    //Dropdown-list change event for select
+    $('#location-select').change(function (){ 
+       
+     //Loads Json data
+     var jsonData = $.ajax({
+          //Using POST method for server-side.
+          type: "POST",
+          //Loads the URL Server-side PHP.
+          url: "xml_2_json_scatterChart.php",
+          //gets the value of the select list.
+          data: {get_option:$('#location-select').val()},
+          //Once successful, parameter will store the data in responseText.
+          success: function(responseText){      
+          //console.log(responseText);
+           
+          //Calls the function drawChart with the Json data. 
+          drawChart(responseText);           
+          
+          }
+      
+      });
+
+  });
+
+//Drawing Function gets called with parameter
+function drawChart(responseText) { 
+
+    //The datatable that handles the JsonData  
+    var data = new google.visualization.DataTable(responseText);
+      
+      //Set chart options
+      var options = {
+        'title':'This is the Scatter Chart',
+        'width':1280,'height':720,
+        'pointShape': 'square',
+        'hAxis': {title: 'Every day at 12:00pm (2016-2017)'},
+        'vAxis': {title: 'No2 value / µg m-3'},        
+        }; 
+        
+        //Instantiate and draw the chart, passing in some options.
+        var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+  }
+
+    
+});           
+
+</script>
+
+<style>
+    body{
+      margin:0 auto;
+      text-align: center;
+    }
+      #myForm{
+        position: absolute;
+        width:100%;
+        text-align:center;
+        z-index: 111111;
+      }
+      #location-select{
+        width: 400px;
+        height:50px;
+      }
+      
+      #chart_div{
+       
+        width: 1280px;
+        margin: 0 auto;
+      }
+      h1{
+        text-align: center;
+      }
+</style>
+  
+</head>
+
+<body>
+<!-- Headings --> 
+<h1>Scatter Chart</h1>
+<h1>Please choose a location.</h1>
+
+<!-- Dropdown list for location selection -->
+<form id="myForm">  
+<select id="location-select" >
+  <option value="-1">Choose a location</option>
+  <option value="Brislington">brislington</option>
+  <option value="fishponds">fishponds</option>
+  <option value="newfoundland_way">newfoundland_way</option>
+  <option value="parson_st">parson_st</option>
+  <option value="rupert_st">rupert_st</option>
+  <option value="wells_road">wells_road</option>
+</select>
+ </form> 
+      
+<div id="chart_div"></div>
+   
+</body>
+</html>

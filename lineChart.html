@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+ <html>
+  <head>
+    <!-- Loads the AJAX and JQUERY API -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    
+    <script type="text/javascript">  
+    // Load the Visualization API and the corechart package.
+      google.charts.load('current', {packages:['corechart']});
+
+// When the document is ready.                      
+$(document).ready(function(){ 
+
+    //Dropdown-list Submit button click for selection
+    $( '.press-btn' ).click(function() { 
+         
+    //Stores variable of the selected value from dropdown-list.
+    var locationSelection = $( "#location-select option:selected" ).val();
+    var dateSelection = $( "#date-select option:selected" ).val();
+       
+    //Loads Json data
+    var jsonData = $.ajax({
+        //Using POST method for server-side.
+        type: "POST",
+        //Loads the URL Server-side PHP.
+        url: "xml_2_json_lineChart.php",
+        //gets the value of the select list.  
+        data: {
+                get_option:locationSelection, 
+                get_option_Date:dateSelection,
+              },
+       //Once successful, parameter will store the data in responseText.         
+       success: function(responseText){          
+       //console.log(responseText);
+       
+       //Calls the function drawChart with the Json data.  
+       drawChart(responseText);           
+       
+       }
+    
+    });
+
+});
+
+//Drawing Function gets called with parameter
+function drawChart(responseText) { 
+
+    //The datatable that handles the JsonData  
+    var data = new google.visualization.DataTable(responseText);
+
+    //Sorts the data in ordered format to prevent lines from flying around for the X-axis, since the xml database isn't in order
+    data.sort([{column:0}]);
+    
+    //Set chart options
+    var options = {
+        'title':'This is the Line Chart',
+        'width':1280,'height':720,
+        'hAxis': {title: 'A days reading of 24 hours'},
+        'vAxis': {title: 'No2 value / µg m-3'},
+        }; 
+        
+    //Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+  }
+
+});   
+           
+</script>
+<style>
+    body{
+      margin:0 auto;
+      text-align: center;
+    }
+      #myForm{
+        position: absolute;
+        width:100%;
+        text-align:center;
+        z-index: 111111;
+      }
+      .mySelect{
+        width: 400px;
+        height:50px;
+      }
+      
+      #chart_div{
+       
+        width: 1280px;
+        margin: 0 auto;
+      }
+      h1{
+        text-align: center;
+      }
+      .press-btn{height:50px;}
+</style>
+
+</head>
+
+<body>
+
+<!-- Headings -->
+<h1>Line Chart</h1> 
+<h1>Please choose a location and date.</h1>
+<p>Some locations doesn't have data for selected dates, please select other dates.</p>
+
+<!-- All the dropdown list for selecting locations and dates -->
+<form id="myForm">  
+<select id="location-select" class="mySelect">
+  <option value="-1">Choose a location</option>
+  <option value="Brislington">brislington</option>
+  <option value="fishponds">fishponds</option>
+  <option value="newfoundland_way">newfoundland_way</option>
+  <option value="parson_st">parson_st</option>
+  <option value="rupert_st">rupert_st</option>
+  <option value="wells_road">wells_road</option>
+</select>
+
+<select id="date-select" class="mySelect">
+  <option value="-2">Choose a date</option>
+  <optgroup label="2016">
+    <option value="11/03/2016">11/03/2016</option>
+    <option value="12/03/2016">12/03/2016</option>
+    <option value="13/03/2016">13/03/2016</option>
+    <option value="14/03/2016">14/03/2016</option>
+    <option value="15/03/2016">15/03/2016</option>
+    <option value="16/03/2016">16/03/2016</option>
+    <option value="17/03/2016">17/03/2016</option>
+    <option value="18/03/2016">18/03/2016</option>
+    <option value="19/03/2016">19/03/2016</option>
+    <option value="20/03/2016">19/03/2016</option>
+    <option value="21/03/2016">21/03/2016</option>
+    <option value="22/03/2016">22/03/2016</option>
+    <option value="23/03/2016">23/03/2016</option>
+    <option value="24/03/2016">24/03/2016</option>
+    <option value="25/03/2016">25/03/2016</option>
+  </optgroup>
+
+  <optgroup label="2015">
+    <option value="15/06/2015">15/06/2015</option>
+    <option value="16/06/2015">16/06/2015</option>
+    <option value="17/06/2015">17/06/2015</option>
+    <option value="18/06/2015">18/06/2015</option>
+    <option value="19/06/2015">19/06/2015</option>
+    <option value="20/06/2015">20/06/2015</option>
+    <option value="21/06/2015">21/06/2015</option>
+    <option value="22/06/2015">22/06/2015</option>
+    <option value="23/06/2015">23/06/2015</option> 
+    <option value="24/06/2015">24/06/2015</option>
+    <option value="25/06/2015">25/06/2015</option>
+    <option value="26/06/2015">26/06/2015</option>
+    <option value="27/06/2015">27/06/2015</option>
+    <option value="28/06/2015">28/06/2015</option>
+    <option value="29/06/2015">29/06/2015</option>
+    <option value="30/06/2015">30/06/2015</option>
+    <option value="31/06/2015">31/06/2015</option>
+  </optgroup>
+
+  <optgroup label="2014">
+    <option value="13/11/2014">13/11/2014</option>
+    <option value="14/11/2014">14/11/2014</option>
+    <option value="15/11/2014">15/11/2014</option>
+    <option value="16/11/2014">16/11/2014</option>
+    <option value="17/11/2014">17/11/2014</option>
+    <option value="18/11/2014">18/11/2014</option>
+    <option value="19/11/2014">19/11/2014</option>
+    <option value="20/11/2014">20/11/2014</option>
+    <option value="21/11/2014">21/11/2014</option>
+    <option value="22/11/2014">22/11/2014</option>
+    <option value="23/11/2014">23/11/2014</option>
+    <option value="24/11/2014">24/11/2014</option>
+    <option value="25/11/2014">25/11/2014</option>
+    <option value="26/11/2014">26/11/2014</option>
+    <option value="27/11/2014">27/11/2014</option>
+    <option value="28/11/2014">28/11/2014</option>
+  </optgroup>
+
+</select>
+
+<button class="press-btn" name="btn" type="button">SUBMIT</button>
+
+</form> 
+      
+<div id="chart_div"></div>
+   
+</body>
+</html>
